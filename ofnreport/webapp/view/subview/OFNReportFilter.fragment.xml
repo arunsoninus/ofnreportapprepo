@@ -1,0 +1,74 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:main="sap.ui.webc.main" xmlns:core="sap.ui.core">
+	<HBox>
+		<VBox width="100%">
+			<fb:FilterBar showFilterConfiguration="false" useToolbar="false" id="planningFilterBar" clear="onClear" search="onPressGoRetrieveRequests"
+				showClearOnFB="true" class="sapUiNoMargin sapUiNoContentPadding">
+				<fb:filterGroupItems>
+					<fb:FilterGroupItem groupName="__$INTERNAL$" name="ClaimType" label="Request Type" labelTooltip="Request Type" visibleInFilterBar="true">
+						<fb:control>
+							<MultiInput width="40%" id="inpRqstTypeValueHelp" valueHelpOnly="true" suggestionRows="{ path : 'AppModel>/claimRequest/claimTypeList' }"
+								valueHelpRequest="handleRequestTypeValueHelp" tokenUpdate="onUpdateClaimType" placeholder="Select Request Type"
+								tokens="{AppModel>/oClaimToken}">
+								<tokens>
+									<Token key="{AppModel>CONFIG_KEY}" text="{AppModel>CONFIG_VALUE}" delete="onDele"/>
+								</tokens>
+								<suggestionColumns>
+									<Column>
+										<Label text="Request Type"/>
+									</Column>
+								</suggestionColumns>
+								<suggestionRows>
+									<ColumnListItem>
+										<Label text="{AppModel>claimType}"/>
+									</ColumnListItem>
+								</suggestionRows>
+							</MultiInput>
+						</fb:control>
+					</fb:FilterGroupItem>
+				 	<fb:FilterGroupItem groupName="__$INTERNAL$" name="ULU" label="ULU" labelTooltip="" visibleInFilterBar="true">
+						<fb:control>
+							<MultiInput width="40%" id="inpUluValueHelp" valueHelpOnly="true" suggestionRows="{ path : 'AppModel>/claimRequest/UluList' }"
+								valueHelpRequest="handleValueHelpUlu" tokenUpdate="onTokenUpdateUlu" placeholder="Select ULU">
+								<tokens></tokens>
+								<suggestionColumns>
+									<Column>
+										<Label text="ULU Code"/>
+									</Column>
+									<Column>
+										<Label text="ULU Name"/>
+									</Column>
+								</suggestionColumns>
+								<suggestionRows>
+									<ColumnListItem>
+										<Label text="{AppModel>ULU_C}"/>
+										<Label text="{AppModel>ULU_T}"/>
+									</ColumnListItem>
+								</suggestionRows>
+							</MultiInput>
+						</fb:control>
+					</fb:FilterGroupItem>
+				 	<fb:FilterGroupItem groupName="__$INTERNAL$" name="paymentMonth" label="Payment Month" labelTooltip=""
+						visibleInFilterBar="true"  mandatory="true" >
+						<fb:control>
+							<MultiInput width="40%" id="inpPaymentMonthOfn" valueHelpOnly="true" suggestionRows="{ path : 'AppModel>/lkSelection/MonthList' }"
+								valueHelpRequest="handleUtilizationYr" placeholder="Select Payment Month" >
+								<tokens></tokens>
+								<suggestionColumns>
+									<Column>
+										<Label text="Select Month"/>
+									</Column>
+								</suggestionColumns>
+								<suggestionRows>
+									<ColumnListItem>
+										<Label text="{AppModel>FULL_NM}"/>
+									</ColumnListItem>
+								</suggestionRows>
+							</MultiInput>
+						</fb:control>
+					</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+			</fb:FilterBar>
+		</VBox>
+	</HBox>
+</core:FragmentDefinition>

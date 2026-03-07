@@ -1,0 +1,92 @@
+/* Enter your custom styles here */
+.size3 {
+    font-size: 1rem;
+}
+
+.removeBorderButton span.sapMBtnInner.sapMBtnReject {
+    border: none !important;
+    background-image: none;
+    background-color: #fff;
+    color: #b00;
+}
+
+
+/*
+td[id="__item16-__clone41_cell0"] {
+    background: #ff9933 !important;
+}
+
+td[id="__item16-__clone41_cell0"] {
+    background: #ff3333 !important;
+}
+
+td[id="__item16-__clone41_cell0"] {
+    background: #33cc33 !important;
+    /*background-color: green;
+    }*/
+
+
+
+.orangeBackground {
+    background: #ff9933 !important;
+}
+
+.redBackground {
+    background: #ff3333 !important;
+}
+
+.greenBackground {
+    background: #33cc33 !important;
+}
+
+
+.indicatorRow {
+    margin: 0rem !important;
+    padding: 0rem !important;
+}
+
+/*.indicatorRow.sapMListTblCell {
+    padding: 0rem !important;
+    vertical-align: top !important;
+}*/
+
+
+
+/*.sapMListTblHighlightCell+.sapMListTblCell{*/
+/*	padding: 0rem!important;*/
+/*}*/
+
+
+.sapSuiteUiCommonsProcessFlowNode3ZoomLevel3 {
+    clear: both;
+    float: left;
+    display: block;
+    position: relative;
+    margin: 0rem;
+    /*padding: 0rem !important;*/
+    width: 8.5rem;
+    min-width: 6.5rem;
+    max-width: 10.5rem;
+    overflow: hidden;
+}
+
+.sapSuiteUiCommonsProcessFlowNode3ZoomLevel2 {
+    clear: both;
+    float: left;
+    display: block;
+    position: relative;
+    margin: 0rem;
+    /*padding: 0rem !important;*/
+    width: 9rem;
+    min-width: 9rem;
+    max-width: 9rem;
+    overflow: hidden;
+}
+
+.processFlowNodeText {
+    font-size: 0.5rem !important
+}
+
+.hideRadioButtonSelection .sapMRbSvg {
+      visibility: hidden !important;
+}

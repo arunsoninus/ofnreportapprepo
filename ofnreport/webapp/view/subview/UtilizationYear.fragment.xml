@@ -1,0 +1,19 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<TableSelectDialog noDataText="No Data Found" title="Select Payment Month" search=".handleSearch1($event, 'Month')"
+		liveChange=".handleSearch1($event, 'Month')" confirm=".onTokenUpdateYear" contentHeight="auto" contentWidth="20%"
+		cancel=".handleCloseUluFdlu" multiSelect="false" growingThreshold="1200" items="{ path : 'AppModel>/lkSelection/MonthList'}">
+		<ColumnListItem vAlign="Middle" selected="{AppModel>Selected}">
+			<cells>
+				<Text
+					text="{ path: 'AppModel>Month', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'MMM, yyyy', source: { pattern: 'MM/yyyy' } } }"/>
+			</cells>
+		</ColumnListItem>
+		<columns>
+			<Column minScreenWidth="Desktop" demandPopin="true">
+				<header>
+					<Text text="Month"/>
+				</header>
+			</Column>
+		</columns>
+	</TableSelectDialog>
+</core:FragmentDefinition>

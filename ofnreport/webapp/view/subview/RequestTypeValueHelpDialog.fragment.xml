@@ -1,0 +1,20 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<TableSelectDialog id="idClaimTypeSelectionDialog" noDataText="No Data Found" title="Select Request Type"
+		search=".handleSearch($event, 'CONFIG_KEY', 'CONFIG_VALUE')" liveChange=".handleSearch($event, 'CONFIG_KEY', 'CONFIG_VALUE')"
+		confirm=".handleConfirmClaimType" contentHeight="auto" contentWidth="30%" cancel=".handleCloseClaimType" multiSelect="true"
+		items="{ path : 'AppModel>/lkSelection/requestTypeList', sorter : { path : 'CONFIG_VALUE', descending : false } }">
+		<ColumnListItem vAlign="Middle" selected="{AppModel>Selected}">
+			<cells>
+				<ObjectIdentifier title="{AppModel>CONFIG_VALUE}" text="{AppModel>CONFIG_KEY}"/>
+			</cells>
+		</ColumnListItem>
+		<columns>
+			<Column >
+				<header>
+					<!--	<Title text="Select All" level="H3"/> -->
+					<Label text="Select All" design="Bold"/>
+				</header>
+			</Column>
+		</columns>
+	</TableSelectDialog>
+</core:FragmentDefinition>

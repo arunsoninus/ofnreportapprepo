@@ -1,0 +1,180 @@
+{
+  "_version": "1.82.0",
+  "sap.app": {
+    "id": "nus.edu.sg.ofnreport",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.4",
+      "toolsId": "95238a5a-4cbd-4eef-abd1-ee8aefdb630c"
+    },
+     "dataSources": {
+      "utilService": {
+        "uri": "/v2/util",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/util_metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "catalogService": {
+        "uri": "/v2/catalog/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/catalog.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "cwRunReportService": {
+        "uri": "/odata/v2/cwned/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/catalog.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "local_data_alias": {
+        "uri": "enums/localdata.json",
+        "type": "JSON"
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ofnreportview-display": {
+          "semanticObject": "ofnreportview",
+          "action": "display",
+          "title": "{{ofnreportview-display.flpTitle}}",
+          "subTitle": "{{ofnreportview-display.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.145.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "nus.edu.sg.ofnreport.i18n.i18n"
+        }
+      },
+       "CatalogSrvModel": {
+        "dataSource": "catalogService",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "UtilitySrvModel": {
+        "dataSource": "utilService",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "CWRunReportSrvModel": {
+        "dataSource": "cwRunReportService",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "synchronizationMode": "None",
+          "earlyRequests": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "nus.edu.sg.ofnreport.view",
+        "async": true,
+        "viewPath": "nus.edu.sg.ofnreport.view"
+      },
+      "routes": [
+        {
+          "name": "RouteOfnReportHome",
+          "pattern": "RouteOfnReportHome",
+          "target": [
+            "TargetOfnReportHome"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetOfnReportHome": {
+          "id": "OfnReportHome",
+          "name": "OfnReportHome"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "nus.edu.sg.ofnreport.view.OfnReportHome",
+      "type": "XML",
+      "id": "OfnReportHome",
+      "async": true
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "ofnreportapp"
+  }
+}

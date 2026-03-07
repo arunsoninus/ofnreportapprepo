@@ -1,0 +1,8 @@
+<mvc:View controllerName="nus.edu.sg.ofnreport.controller.NotFound" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+	<MessagePage title="{AppModel>/ErrorPageTitle}" text="{AppModel>/ErrorPageText}" description="{AppModel>/ErrorPageDescription}"
+		showNavButton="true" navButtonPress=".onNavBack">
+		<buttons>
+			<Button text="Go Back Again" press="onNavBack"/>
+		</buttons>
+	</MessagePage>
+</mvc:View>

@@ -1,0 +1,128 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" xmlns:u="sap.uxap"
+	xmlns:tnt="sap.tnt">
+	<IconTabBar headerMode="Inline" select="onSelectIconFilter" selectedKey="{AppModel>/oTabKey}" expandable="false">
+		<items>
+			<IconTabFilter key="cw" text="CW/NED" count="{AppModel>/CWNED_Count}" visible="{AppModel>/iscwofnvisible}">
+				<Table id="OfnCwNedRequestsTableId" visible="{AppModel>/iscwofnvisible}" inset="false" sticky="ColumnHeaders,HeaderToolbar" growing="true"
+					growingThreshold="50" updateFinished="onUpdateFinished"
+					items="{ path: 'OfnReportSrvModel>/CwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<ToolbarSpacer/>
+							<SearchField visible="{= ${AppModel>/showSearchField} ? true : false}" id="srchFldClaimRequest" placeholder="Search request.."
+								search="onPressSearchClaimRequest" width="20%"/>
+							<Button icon="sap-icon://sort" press="onPressSortRequest" type="Transparent" visible="true"/>
+							<Button tooltip="Group" icon="sap-icon://group-2" press="onPressGroupRequest"/>
+							<Button press="onPressExportData" icon="sap-icon://excel-attachment" text="Download" type="Transparent"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column1}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column9}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column2}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column3}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column4}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet">
+							<Label design="Bold" text="{i18n>ofnreport.Column5}"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column8}" wrapping="true"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem>
+							<cells>
+								<Text text="{OfnReportSrvModel>FULL_NM} ({OfnReportSrvModel>STAFF_ID})"/>
+								<Text text="{OfnReportSrvModel>REQUEST_ID}"/>
+								<Text text="{ path: 'OfnReportSrvModel>ULU_T'} / { path: 'OfnReportSrvModel>FDLU_T'}"/>
+								<Text
+									text="{ path: 'OfnReportSrvModel>START_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } } / { path: 'OfnReportSrvModel>END_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } }"/>
+								<Text text="{OfnReportSrvModel>WORK_DETAILS}"/>
+								<Text text="{ path: 'OfnReportSrvModel>AMOUNT'}"/>
+								<VBox>
+									<Text text="{ path: 'OfnReportSrvModel>SUBMITTED_ON_TS', formatter:'.formatTimestamp' }"/>
+									<Text text="{ path: 'OfnReportSrvModel>SUBMITTED_BY_FULLNAME'}"/>
+								</VBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</IconTabFilter>
+			<IconTabFilter key="opwn" text="OPWN" count="{AppModel>/OPWN_Count}" visible="{AppModel>/isopwnofnvisible}">
+				<Table id="OfnOpwnRequestsTableId" inset="false" visible="{AppModel>/isopwnofnvisible}" sticky="ColumnHeaders,HeaderToolbar" growing="true"
+					growingThreshold="50" updateFinished="onUpdateFinishedopwn"
+					items="{ path: 'OfnReportSrvModel>/CwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
+					<headerToolbar>
+						<OverflowToolbar>
+							<ToolbarSpacer/>
+							<SearchField visible="{= ${AppModel>/showSearchField} ? true : false}" id="srchFldClaimRequestopwn" placeholder="Search request.."
+								search="onPressSearchClaimRequest" width="20%"/>
+							<Button icon="sap-icon://sort" press="onPressSortRequest" type="Transparent" visible="true"/>
+							<Button tooltip="Group" icon="sap-icon://group-2" press="onPressGroupRequest"/>
+							<Button id="exportExcelopwn" press="onPressExportData" icon="sap-icon://excel-attachment" text="Download" type="Transparent"/>
+						</OverflowToolbar>
+					</headerToolbar>
+					<columns>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column1}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column9}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column2}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column3}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column4}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet">
+							<Label design="Bold" text="{i18n>ofnreport.opwn.Column5}"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet">
+							<Label design="Bold" text="{i18n>ofnreport.Column6}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Center" minScreenWidth="Tablet">
+							<Label design="Bold" text="{i18n>ofnreport.Column7}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+							<Label design="Bold" text="{i18n>ofnreport.Column8}" wrapping="true"/>
+						</Column>
+					</columns>
+					<items>
+						<ColumnListItem >
+							<cells>
+								<Text text="{OfnReportSrvModel>FULL_NM} ({OfnReportSrvModel>STAFF_ID})"/>
+								<Text text="{OfnReportSrvModel>REQUEST_ID}"/>
+								<Text text="{ path: 'OfnReportSrvModel>ULU_T'} / { path: 'OfnReportSrvModel>FDLU_T'}"/>
+								<Text
+									text="{ path: 'OfnReportSrvModel>START_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } } / { path: 'OfnReportSrvModel>END_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } }"/>
+								<Text text="{OfnReportSrvModel>WORK_DETAILS}"/>
+								<Text text="{ path: 'OfnReportSrvModel>AMOUNT'}"/>
+								<Text text="{ path: 'OfnReportSrvModel>ENG_FDLU_T'}"/>
+								<Text text="{ path: 'OfnReportSrvModel>ENG_ULU_T'}"/>
+								<VBox>
+									<Text text="{ path: 'OfnReportSrvModel>SUBMITTED_ON_TS', formatter:'.formatTimestamp' }"/>
+									<Text text="{ path: 'OfnReportSrvModel>SUBMITTED_BY_FULLNAME'}"/>
+								</VBox>
+							</cells>
+						</ColumnListItem>
+					</items>
+				</Table>
+			</IconTabFilter>
+		</items>
+		<content></content>
+	</IconTabBar>
+</core:FragmentDefinition>
