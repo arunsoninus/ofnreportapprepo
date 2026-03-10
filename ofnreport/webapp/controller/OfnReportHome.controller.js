@@ -10,14 +10,12 @@ sap.ui.define([
 	"../utils/utility",
 	"../utils/headerHelper",
 	"../utils/configuration",
-	"sap/ui/model/odata/v2/ODataModel",
 	"sap/ui/export/Spreadsheet",
 	"sap/ui/export/library",
-	"nus/edu/sg/ofnreport/utils/configuration",
 	"sap/m/Token"
 
 ], function (BaseController, ExtendedValueHelp, Fragment, JSONModel, Formatter, MessageToast, MessageBox, Filter,
-	FilterOperator, Sorter, Services, AppConstant, models, Utility, HeaderHelper, Config, ODataModel, Spreadsheet, exportLibrary, Config,
+	FilterOperator, Sorter, Services, AppConstant, models, Utility, HeaderHelper, Config, Spreadsheet, exportLibrary,
 	Token) {
 	"use strict";
 	var EdmType = exportLibrary.EdmType;
@@ -28,9 +26,10 @@ sap.ui.define([
 		onInit: function () {
 			this.oRouter = this.getOwnerComponent().getRouter();
 			this._bDescendingSort = false;
-			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+			// this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 
 			this.initializeModel();
+
 			var ofnCwNedTable = this.getView().byId("OfnCwNedRequestsTableId");
 			this.oTemplate = ofnCwNedTable.getBindingInfo("items").template;
 			ofnCwNedTable.unbindAggregation("items");
@@ -44,57 +43,96 @@ sap.ui.define([
 			var oAppModel = this.setComponentModel("AppModel");
 			oAppModel.setData(AppConstant);
 			this.AppModel = oAppModel;
-			// this._fnLoadMetaData();
-			// if (!this.AppModel.getProperty("/oRState"))
-			this.generateTokenForLoggedInUser();
+			this.getUserDetails();
 		},
-		_fnLoadMetaData: function () {
-			var serviceName = config.dbOperations.metadataClaims;
-			var token = this.AppModel.getProperty("/token");
-			var oHeaders = {
-				"Accept": "application/json",
-				"Authorization": "Bearer" + " " + token
-			};
+		getUserDetails: async function () {
+			await Services.getUserInfoDetails(
+				this,
+				async function (userData) {
+					var oRetData = userData.getUserDetails;
+					if (oRetData && oRetData.staffInfo && oRetData.staffInfo.primaryAssignment && oRetData.staffInfo.primaryAssignment.STF_NUMBER) {
+						// this.AppModel.setProperty("/token", oRetData.token);
+						this.AppModel.setProperty("/loggedInUserInfo/userName", oRetData.staffInfo.primaryAssignment.STF_NUMBER);
+						this.AppModel.setProperty("/oPrimaryData", oRetData);
 
-			var oDataModel = new ODataModel({
-				serviceUrl: serviceName,
-				headers: oHeaders
-			});
-			var that = this;
-			oDataModel.setUseBatch(false);
-			oDataModel.metadataLoaded().then(function () {
-				this.getOwnerComponent().setModel(oDataModel, "OfnReportSrvModel");
-				this.onClear();
-
-				Utility.retrieveLocations(this);
-				Utility.retrieveWorkTypes(this);
-				Utility.retrieveUnitType(this);
-				Utility.retrieveLevyDetails(this);
-				Utility.retrieveRemunerationType(this);
-				Utility.retrieveWaivers(this);
-				Utility.retrieveSubmission(this);
-				Utility.retrieveStatus(this);
-				Utility.retrievePaymentType(this);
-				this.handleValueHelpUlu(null, function () {
-					that.fnCuttoffDate();
-				});
-				// if (this.AppModel.getProperty("/oRState")) {
-				// this.fnCuttoffDate();
-				this.AppModel.setProperty("/oPMonth", false);
-				// this.AppModel.setProperty("/iscwofnvisible", true);
-				// this.AppModel.setProperty("/isopwnofnvisible", true);
-				// }
+						var aMatrixOfnAdmin = this.provisionOfnAdmins(oRetData.staffInfo.approverMatrix);
+						this.AppModel.setProperty("/iscwofnvisible", Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
+							"201" || oItem.PROCESS_CODE === "202")));
+						this.AppModel.setProperty("/isopwnofnvisible", Boolean(aMatrixOfnAdmin.find(oItem =>
+							oItem.PROCESS_CODE === "203")));
+						this.AppModel.setProperty("/oTabKey", Boolean(aMatrixOfnAdmin.find(oItem =>
+							oItem.PROCESS_CODE === "203")) ? "opwn" : Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
+								"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
+						this.AppModel.setProperty("/OfnAdminProcessCode", aMatrixOfnAdmin);
+						// this._fnLoadMetaData();
+					}
+					await this.retrieveAllLookups();
+				}.bind(this)
+			);
+		},
+		retrieveAllLookups: async function () {
+			Utility.retrieveLocations(this);
+			Utility.retrieveWorkTypes(this);
+			Utility.retrieveUnitType(this);
+			Utility.retrieveLevyDetails(this);
+			Utility.retrieveRemunerationType(this);
+			Utility.retrieveWaivers(this);
+			Utility.retrieveSubmission(this);
+			Utility.retrieveStatus(this);
+			Utility.retrievePaymentType(this);
+			this.handleValueHelpUlu(null, function () {
+				this.fnCuttoffDate();
 			}.bind(this));
+			this.AppModel.setProperty("/oPMonth", false);
+
 		},
+		// _fnLoadMetaData: function () {
+		// 	var serviceName = config.dbOperations.metadataClaims;
+		// 	var token = this.AppModel.getProperty("/token");
+		// 	var oHeaders = {
+		// 		"Accept": "application/json",
+		// 		"Authorization": "Bearer" + " " + token
+		// 	};
+
+		// 	var oDataModel = new ODataModel({
+		// 		serviceUrl: serviceName,
+		// 		headers: oHeaders
+		// 	});
+		// 	var that = this;
+		// 	oDataModel.setUseBatch(false);
+		// 	oDataModel.metadataLoaded().then(function () {
+		// 		this.getOwnerComponent().setModel(oDataModel, "OfnReportSrvModel");
+		// 		this.onClear();
+
+		// 		Utility.retrieveLocations(this);
+		// 		Utility.retrieveWorkTypes(this);
+		// 		Utility.retrieveUnitType(this);
+		// 		Utility.retrieveLevyDetails(this);
+		// 		Utility.retrieveRemunerationType(this);
+		// 		Utility.retrieveWaivers(this);
+		// 		Utility.retrieveSubmission(this);
+		// 		Utility.retrieveStatus(this);
+		// 		Utility.retrievePaymentType(this);
+		// 		this.handleValueHelpUlu(null, function () {
+		// 			that.fnCuttoffDate();
+		// 		});
+		// 		// if (this.AppModel.getProperty("/oRState")) {
+		// 		// this.fnCuttoffDate();
+		// 		this.AppModel.setProperty("/oPMonth", false);
+		// 		// this.AppModel.setProperty("/iscwofnvisible", true);
+		// 		// this.AppModel.setProperty("/isopwnofnvisible", true);
+		// 		// }
+		// 	}.bind(this));
+		// },
 
 		fnCuttoffDate: function () {
-			var oOfnReportSrvModel = this.getComponentModel("OfnReportSrvModel");
+			var CatalogSrvModel = this.getComponentModel("CatalogSrvModel");
 			this.getUIControl("inpPaymentMonthOfn").removeAllTokens();
 			var aFilters = [];
 			aFilters.push([new Filter("CONFIG_KEY", FilterOperator.EQ, "CUTOFFDAY"),
 			new Filter("PROCESS_CODE", FilterOperator.EQ, "203")
 			]);
-			oOfnReportSrvModel.read("/AppConfigurations", {
+			CatalogSrvModel.read(Config.dbOperations.appConfigs, {
 				filters: aFilters,
 				success: function (oData) {
 					if (oData && oData.results) {
@@ -151,24 +189,24 @@ sap.ui.define([
 			return result.reverse();
 		},
 
-		generateTokenForLoggedInUser: function () {
-			Services.fetchLoggedUserToken(this, function (oRetData) {
-				this.AppModel.setProperty("/token", oRetData.token);
-				this.AppModel.setProperty("/loggedInUserInfo/userName", oRetData.staffInfo.primaryAssignment.STF_NUMBER);
-				this.AppModel.setProperty("/oPrimaryData", oRetData);
+		// generateTokenForLoggedInUser: function () {
+		// 	Services.fetchLoggedUserToken(this, function (oRetData) {
+		// 		this.AppModel.setProperty("/token", oRetData.token);
+		// 		this.AppModel.setProperty("/loggedInUserInfo/userName", oRetData.staffInfo.primaryAssignment.STF_NUMBER);
+		// 		this.AppModel.setProperty("/oPrimaryData", oRetData);
 
-				var aMatrixOfnAdmin = this.provisionOfnAdmins(oRetData.staffInfo.approverMatrix);
-				this.AppModel.setProperty("/iscwofnvisible", Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
-					"201" || oItem.PROCESS_CODE === "202")));
-				this.AppModel.setProperty("/isopwnofnvisible", Boolean(aMatrixOfnAdmin.find(oItem =>
-					oItem.PROCESS_CODE === "203")));
-				this.AppModel.setProperty("/oTabKey", Boolean(aMatrixOfnAdmin.find(oItem =>
-					oItem.PROCESS_CODE === "203")) ? "opwn" : Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
-						"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
-				this.AppModel.setProperty("/OfnAdminProcessCode", aMatrixOfnAdmin);
-				this._fnLoadMetaData();
-			}.bind(this));
-		},
+		// 		var aMatrixOfnAdmin = this.provisionOfnAdmins(oRetData.staffInfo.approverMatrix);
+		// 		this.AppModel.setProperty("/iscwofnvisible", Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
+		// 			"201" || oItem.PROCESS_CODE === "202")));
+		// 		this.AppModel.setProperty("/isopwnofnvisible", Boolean(aMatrixOfnAdmin.find(oItem =>
+		// 			oItem.PROCESS_CODE === "203")));
+		// 		this.AppModel.setProperty("/oTabKey", Boolean(aMatrixOfnAdmin.find(oItem =>
+		// 			oItem.PROCESS_CODE === "203")) ? "opwn" : Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
+		// 				"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
+		// 		this.AppModel.setProperty("/OfnAdminProcessCode", aMatrixOfnAdmin);
+		// 		this._fnLoadMetaData();
+		// 	}.bind(this));
+		// },
 		provisionOfnAdmins: function (assignList) {
 			const aMatrixOfnAdmin = [];
 			assignList.forEach(item => {
@@ -184,8 +222,8 @@ sap.ui.define([
 		handleRequestTypeValueHelp: function (oEvt) {
 			this.AppModel.setProperty("/iscwofnvisible", false);
 			this.AppModel.setProperty("/isopwnofnvisible", false);
-			var oDataModel = this.getOwnerComponent().getModel("OfnReportSrvModel");
-			var oCont = this.AppModel.getProperty("/oSelectedProf");
+			var oDataModel = this.getComponentModel("CatalogSrvModel");
+			// var oCont = this.AppModel.getProperty("/oSelectedProf");
 			var aFilters = [],
 				that = this,
 				OfnAdminProcessCode = this.AppModel.getProperty("/OfnAdminProcessCode");
@@ -195,7 +233,7 @@ sap.ui.define([
 			OfnAdminProcessCode.forEach(function (oItem) {
 				aFilters.push(new Filter("REFERENCE_VALUE", FilterOperator.EQ, oItem.PROCESS_CODE));
 			}.bind(this));
-			oDataModel.read("/CwsAppConfigs", {
+			oDataModel.read(Config.dbOperations.cwsAppConfigs, {
 				filters: aFilters,
 				success: function (oData) {
 					if (oData) {
@@ -398,7 +436,7 @@ sap.ui.define([
 		/* Filter 6 - ULU */
 		handleValueHelpUlu: function (oEvent, initialCallBack) {
 			//changed the logic of ULU and FDLU search help 
-			var oDataModel = this.getOwnerComponent().getModel("OfnReportSrvModel");
+			var oDataModel = this.getComponentModel("CatalogSrvModel");
 			var oLogData = this.AppModel.getProperty("/oPrimaryData/staffInfo");
 
 			var oSelectedReqTypes = this.getUIControl("inpRqstTypeValueHelp").getTokens();
@@ -416,7 +454,7 @@ sap.ui.define([
 			}
 			dynamicFilters.push(new Filter(aFilters, true));
 			var that = this;
-			oDataModel.read("/EclaimsApprovalMatrixViews", {
+			oDataModel.read(Config.dbOperations.approverMatrixView, {
 				filters: [dynamicFilters],
 				success: function (oData) {
 					if (oData) {
@@ -762,7 +800,7 @@ sap.ui.define([
 		// format ofn work report
 
 		framePayMonth: function (modelObj, paymentData, bindingProp) {
-			var oDataModel = this.getOwnerComponent().getModel("OfnReportSrvModel");
+			var oDataModel = this.getComponentModel("OfnReportSrvModel");
 			var that = this,
 				tempMap = {};
 			var cnt = 0;
@@ -1126,7 +1164,7 @@ sap.ui.define([
 			var sPath = oEvent.getParameter("listItem").getBindingContext("OfnReportSrvModel").getPath();
 			var objData = this.getComponentModel("OfnReportSrvModel").getProperty(sPath);
 			var tabKey = this.AppModel.getProperty("/oTabKey");
-			var project = "CwsRequestViews('" + objData.REQ_UNIQUE_ID + "')";
+			var project = "cwsRequestViews('" + objData.REQ_UNIQUE_ID + "')";
 			var layout = "MidColumnFullScreen";
 			var oStateToSave = this.AppModel.getProperty("/aSearchFilter");
 			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
@@ -1149,40 +1187,80 @@ sap.ui.define([
 
 		// 8. Event for saving the info before navigating to other app
 		_fnSaveState: function () {
-			var that = this;
-			sap.ushell.Container.getService("Personalization").getContainer("ofnreport", {
-				validity: 0
-			}).fail(function () {
-				//Error Handling
-			}).done(jQuery.proxy(function (oParam) {
-				that.oStateContainer = oParam;
-				that.oStateContainer.clear();
-				var oFiltervalue = that.AppModel.getData();
-				that.oStateContainer.setItemValue("persData", oFiltervalue);
-				that.oStateContainer.save();
-			}, that));
+			if (sap.ushell && sap.ushell.Container) {
+				// var that = this;
+				sap.ushell.Container.getServiceAsync("Personalization")
+					.then(function (oPersonalizationService) {
+						return oPersonalizationService.getContainer("ofnreport", {
+							validity: 0
+						});
+					}.bind(this))
+					.then(function (oContainer) {
+						this.oStateContainer = oContainer;
+						// Clear previous personalization
+						this.oStateContainer.clear();
+						var oFilterValue = that.AppModel.getData();
+						this.oStateContainer.setItemValue("persData", oFilterValue);
+						return this.oStateContainer.save();
+					}.bind(this))
+					.catch(function (oError) {
+						console.error("Error saving personalization:", oError);
+					});
+				// sap.ushell.Container.getService("Personalization").getContainer("ofnreport", {
+				// 	validity: 0
+				// }).fail(function () {
+				// 	//Error Handling
+				// }).done(jQuery.proxy(function (oParam) {
+				// 	that.oStateContainer = oParam;
+				// 	that.oStateContainer.clear();
+				// 	var oFiltervalue = that.AppModel.getData();
+				// 	that.oStateContainer.setItemValue("persData", oFiltervalue);
+				// 	that.oStateContainer.save();
+				// }, that));
+			}
 		},
 		// 9. Event to restore the values from back navigation
 		_fnRestoreState: function () {
-			var that = this;
-			that.AppModel.setProperty("/oRState", true);
-			sap.ushell.Container.getService("Personalization").getContainer("ofnreport", {
-				validity: 0
-			}).fail(function () {
-				// Error Handler
-			}).done(jQuery.proxy(function (oParams) {
-				that.oStateContainer = oParams;
-				var oFilterValue = oParams.getItemValue("persData");
-				if (oFilterValue !== undefined) {
-					// that.AppModel.setData(oFilterValue);
-					// that.AppModel.setProperty("/oRState", false);
-					// that.AppModel.setProperty("/iscwofnvisible", that.AppModel.getProperty("/iscwofnvisible"));
-					// that.AppModel.setProperty("/isopwnofnvisible", that.AppModel.getProperty("/isopwnofnvisible"));
-					// that.fnLoadFilters();
-					that.onPressGoRetrieveRequests();
-					// that.AppModel.setProperty("/oTabKey", that.AppModel.getProperty("/oSelectedSection"));
-				}
-			}, that));
+			if (sap.ushell && sap.ushell.Container) {
+				var that = this;
+				that.AppModel.setProperty("/oRState", true);
+				sap.ushell.Container.getServiceAsync("Personalization")
+					.then(function (oPersonalizationService) {
+						return oPersonalizationService.getContainer("ofnreport", {
+							validity: 0
+						});
+					}.bind(this))
+					.then(function () {
+						this.oStateContainer = oContainer;
+						var oFilterValue = oParams.getItemValue("persData");
+						if (oFilterValue !== undefined) {
+							this.onPressGoRetrieveRequests();
+						}
+					}.bind(this))
+					.catch(function (oError) {
+						console.error("Error saving personalization:", oError);
+					});
+
+
+
+				// sap.ushell.Container.getService("Personalization").getContainer("ofnreport", {
+				// 	validity: 0
+				// }).fail(function () {
+				// 	// Error Handler
+				// }).done(jQuery.proxy(function (oParams) {
+				// 	that.oStateContainer = oParams;
+				// 	var oFilterValue = oParams.getItemValue("persData");
+				// 	if (oFilterValue !== undefined) {
+				// 		// that.AppModel.setData(oFilterValue);
+				// 		// that.AppModel.setProperty("/oRState", false);
+				// 		// that.AppModel.setProperty("/iscwofnvisible", that.AppModel.getProperty("/iscwofnvisible"));
+				// 		// that.AppModel.setProperty("/isopwnofnvisible", that.AppModel.getProperty("/isopwnofnvisible"));
+				// 		// that.fnLoadFilters();
+				// 		that.onPressGoRetrieveRequests();
+				// 		// that.AppModel.setProperty("/oTabKey", that.AppModel.getProperty("/oSelectedSection"));
+				// 	}
+				// }, that));
+			}
 		},
 
 		fnLoadFilters: function () {
@@ -1477,7 +1555,7 @@ sap.ui.define([
 			var objData = this.getComponentModel("OfnReportSrvModel").getProperty(sPath);
 			this.AppModel.setProperty("/claimRequestType", objData.CLAIM_REQUEST_TYPE);
 
-			var oDataModel = this.getOwnerComponent().getModel("OfnReportSrvModel");
+			var oDataModel = this.getComponentModel("OfnReportSrvModel");
 			this.AppModel.setProperty("/claimRequest/draftId", objData.REQ_UNIQUE_ID);
 			var url = "/rest/utils/getAuditLogData?referenceId=" + objData.REQUEST_ID + '&processCode=' + objData.PROCESS_CODE;
 			var token = this.AppModel.getProperty("/token");
@@ -1626,8 +1704,8 @@ sap.ui.define([
 			var oTable = (oKey === "opwn") ? this.getUIControl("OfnOpwnRequestsTableId") : this.getUIControl("OfnCwNedRequestsTableId");
 			var aFilters = decodeURIComponent(oTable.getBinding("items").sFilterParams);
 			aFilters = aFilters.split("=");
-			var oDataModel = this.getOwnerComponent().getModel("OfnReportSrvModel");
-			oDataModel.read("/CwsRequestViews", {
+			var oDataModel = this.getComponentModel("OfnReportSrvModel");
+			oDataModel.read(Config.dbOperations.cwsRequestViewApi, {
 				urlParameters: {
 					"$filter": aFilters[1],
 					"$expand": "CwsPaymentsDetails"
@@ -2269,19 +2347,33 @@ sap.ui.define([
 		},
 
 		onNavDashBoard: function () {
-			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
-			var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
-				target: {
-					semanticObject: "cwdashboard",
-					action: "Display"
-				},
-				params: {}
-			})) || "";
-			oCrossAppNavigator.toExternal({
-				target: {
-					shellHash: hash
-				}
-			});
+			// var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
+			// var hash = (oCrossAppNavigator && oCrossAppNavigator.hrefForExternal({
+			// 	target: {
+			// 		semanticObject: "cwdashboard",
+			// 		action: "Display"
+			// 	},
+			// 	params: {}
+			// })) || "";
+			// oCrossAppNavigator.toExternal({
+			// 	target: {
+			// 		shellHash: hash
+			// 	}
+			// });
+
+			sap.ushell.Container.getServiceAsync("Navigation")
+				.then(function (oNavigation) {
+					oNavigation.navigate({
+						target: {
+							semanticObject: "cwdashboard",
+							action: "Display"
+						},
+						params: {}
+					});
+				})
+				.catch(function (err) {
+					console.error("Dashboard App Navigation failed", err);
+				});
 		},
 
 		onReset: function () {

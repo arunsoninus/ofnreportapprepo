@@ -1,10 +1,8 @@
 sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/ui/core/mvc/Controller",
-	"sap/ui/core/UIComponent", "../utils/dataformatter", "sap/ui/core/Fragment",
-	"../utils/services",
-	"../utils/configuration"
-], function (JSONModel, Controller, UIComponent, Formatter, Fragment, Services, Config) {
+	 "../utils/dataformatter", "sap/ui/core/Fragment"
+], function (JSONModel, Controller, Formatter, Fragment) {
 	"use strict";
 
 	return Controller.extend("nus.edu.sg.ofnreport.controller.BaseController", {

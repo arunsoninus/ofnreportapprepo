@@ -217,16 +217,16 @@ sap.ui.define([
 		},
 
 		retrieveLocations: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"LOCATION"),
 				function (oData) {
 					component.AppModel.setProperty("/locations", oData.results);
 				}.bind(this));
 		},
 		retrieveWorkTypes: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"WORK_TYPE"),
 				function (oData) {
 					component.AppModel.setProperty("/workTypes", oData.results);
@@ -234,8 +234,8 @@ sap.ui.define([
 		},
 
 		retrieveUnitType: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"UNIT_TYPE"),
 				function (oData) {
 					component.AppModel.setProperty("/unitTypes", oData.results);
@@ -243,12 +243,12 @@ sap.ui.define([
 		},
 
 		retrieveLevyDetails: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
 			var aFilters = [];
 			aFilters.push([new Filter("REFERENCE_KEY", FilterOperator.EQ, "EXT_LEVY"),
 				new Filter("REFERENCE_KEY", FilterOperator.EQ, "INT_LEVY")
 			]);
-			oClaimSrvModel.read(Config.dbOperations.cwsAppConfigs, {
+			oCatalogSrvModel.read(Config.dbOperations.cwsAppConfigs, {
 				filters: aFilters,
 				success: function (oData) {
 					if (oData) {
@@ -261,8 +261,8 @@ sap.ui.define([
 		},
 
 		retrieveRemunerationType: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"REMUNERATION_TYPE"),
 				function (oData) {
 					component.AppModel.setProperty("/remunerationList", oData.results);
@@ -270,16 +270,16 @@ sap.ui.define([
 		},
 
 		retrieveWaivers: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY", "WAIVER"),
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY", "WAIVER"),
 				function (oData) {
 					component.AppModel.setProperty("/waiverList", oData.results);
 				}.bind(this));
 		},
 
 		retrieveSubmission: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"SUBMISSION_TYPE"),
 				function (oData) {
 					component.AppModel.setProperty("/submission", oData.results);
@@ -287,8 +287,8 @@ sap.ui.define([
 		},
 
 		retrieveStatus: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.statusConfig, oClaimSrvModel, component, this._fnLookupFilter("STATUS_TYPE",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.statusConfig, oCatalogSrvModel, component, this._fnLookupFilter("STATUS_TYPE",
 					"OPWN"),
 				function (oData) {
 					component.AppModel.setProperty("/opwnStatus", oData.results);
@@ -296,8 +296,8 @@ sap.ui.define([
 		},
 
 		retrievePaymentType: function (component) {
-			var oClaimSrvModel = component.getComponentModel("OfnReportSrvModel");
-			Services.readLookups(Config.dbOperations.cwsAppConfigs, oClaimSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
+			var oCatalogSrvModel = component.getComponentModel("CatalogSrvModel");
+			Services.readLookups(Config.dbOperations.cwsAppConfigs, oCatalogSrvModel, component, this._fnLookupFilter("REFERENCE_KEY",
 					"PAYMENT_TYPE"),
 				function (oData) {
 					component.AppModel.setProperty("/paymentType", oData.results);
