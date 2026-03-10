@@ -5,7 +5,7 @@
 			<IconTabFilter key="cw" text="CW/NED" count="{AppModel>/CWNED_Count}" visible="{AppModel>/iscwofnvisible}">
 				<Table id="OfnCwNedRequestsTableId" visible="{AppModel>/iscwofnvisible}" inset="false" sticky="ColumnHeaders,HeaderToolbar" growing="true"
 					growingThreshold="50" updateFinished="onUpdateFinished"
-					items="{ path: 'OfnReportSrvModel>/CwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
+					items="{ path: 'OfnReportSrvModel>/cwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
 					<headerToolbar>
 						<OverflowToolbar>
 							<ToolbarSpacer/>

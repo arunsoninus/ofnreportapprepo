@@ -3,12 +3,12 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"../utils/dataformatter", "sap/m/MessageToast", "sap/m/MessageBox", "sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
-	"sap/ui/model/FilterType",
 	"sap/ui/model/Sorter",
 	"../utils/services",
 	"../utils/appconstant",
 	"../model/models",
 	"../utils/utility",
+	"../utils/headerHelper",
 	"../utils/configuration",
 	"sap/ui/model/odata/v2/ODataModel",
 	"sap/ui/export/Spreadsheet",
@@ -17,7 +17,7 @@ sap.ui.define([
 	"sap/m/Token"
 
 ], function (BaseController, ExtendedValueHelp, Fragment, JSONModel, Formatter, MessageToast, MessageBox, Filter,
-	FilterOperator, FilterType, Sorter, Services, AppConstant, models, Utility, config, ODataModel, Spreadsheet, exportLibrary, Config,
+	FilterOperator, Sorter, Services, AppConstant, models, Utility, HeaderHelper, Config, ODataModel, Spreadsheet, exportLibrary, Config,
 	Token) {
 	"use strict";
 	var EdmType = exportLibrary.EdmType;
@@ -92,7 +92,7 @@ sap.ui.define([
 			this.getUIControl("inpPaymentMonthOfn").removeAllTokens();
 			var aFilters = [];
 			aFilters.push([new Filter("CONFIG_KEY", FilterOperator.EQ, "CUTOFFDAY"),
-				new Filter("PROCESS_CODE", FilterOperator.EQ, "203")
+			new Filter("PROCESS_CODE", FilterOperator.EQ, "203")
 			]);
 			oOfnReportSrvModel.read("/AppConfigurations", {
 				filters: aFilters,
@@ -118,7 +118,7 @@ sap.ui.define([
 						this.onPressGoRetrieveRequests();
 					}
 				}.bind(this),
-				error: function (oError) {}
+				error: function (oError) { }
 			});
 		},
 
@@ -164,7 +164,7 @@ sap.ui.define([
 					oItem.PROCESS_CODE === "203")));
 				this.AppModel.setProperty("/oTabKey", Boolean(aMatrixOfnAdmin.find(oItem =>
 					oItem.PROCESS_CODE === "203")) ? "opwn" : Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
-					"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
+						"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
 				this.AppModel.setProperty("/OfnAdminProcessCode", aMatrixOfnAdmin);
 				this._fnLoadMetaData();
 			}.bind(this));
@@ -608,7 +608,7 @@ sap.ui.define([
 			if (this.AppModel.getProperty("/isopwnofnvisible")) {
 				this.getView().setBusy(true);
 				orFilter = [new Filter("REQUEST_TYPE", FilterOperator.EQ, "OPWN"),
-					new Filter("MIGRATED", FilterOperator.EQ, "")
+				new Filter("MIGRATED", FilterOperator.EQ, "")
 				];
 				if (opwnAndFilter.aFilters) {
 					aFilter.aFilters.push(new Filter(orFilter, true));
@@ -652,7 +652,7 @@ sap.ui.define([
 
 				var oOfnOpwnReqTable = this.getView().byId("OfnOpwnRequestsTableId");
 				oOfnOpwnReqTable.bindItems({
-					path: "OfnReportSrvModel>/CwsRequestViews",
+					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplateopwn,
 					sorter: new Sorter({
 						path: "REQUEST_ID",
@@ -725,7 +725,7 @@ sap.ui.define([
 
 				var oOfnCwNedReqTable = this.getView().byId("OfnCwNedRequestsTableId");
 				oOfnCwNedReqTable.bindItems({
-					path: "OfnReportSrvModel>/CwsRequestViews",
+					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplate,
 					sorter: new Sorter({
 						path: "REQUEST_ID",
@@ -883,7 +883,7 @@ sap.ui.define([
 					oItem.PROCESS_CODE === "203")));
 				this.AppModel.setProperty("/oTabKey", Boolean(aMatrixOfnAdmin.find(oItem =>
 					oItem.PROCESS_CODE === "203")) ? "opwn" : Boolean(aMatrixOfnAdmin.find(oItem => oItem.PROCESS_CODE === "200" || oItem.PROCESS_CODE ===
-					"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
+						"201" || oItem.PROCESS_CODE === "202")) ? "cw" : "");
 				this.AppModel.setProperty("/rClaimType", []);
 			}
 			if (!!selectedItemsUlu && selectedItemsUlu.length > 0) {
@@ -1395,7 +1395,7 @@ sap.ui.define([
 			MessageBox.confirm("Do you want to Retract the Claim?", {
 				title: "Confirmation",
 				actions: [sap.m.MessageBox.Action.YES,
-					sap.m.MessageBox.Action.NO
+				sap.m.MessageBox.Action.NO
 				],
 				emphasizedAction: sap.m.MessageBox.Action.OK,
 				onClose: function (oAction) {
@@ -1814,7 +1814,8 @@ sap.ui.define([
 		generateLineItem: function (dataArray) {
 			var oView = this;
 			dataArray = dataArray.map((element) => {
-				return {...element,
+				return {
+					...element,
 					CwsPaymentsDetails: (element.CwsPaymentsDetails.results).filter((subElement) => subElement.IS_DELETED !== "Y")
 				}
 			});
@@ -1982,100 +1983,100 @@ sap.ui.define([
 
 		createColumnConfig: function () {
 			return [{
-					label: "Employee No.",
-					property: 'STAFF_ID',
-				}, {
-					label: 'Employee Name',
-					width: "40%",
-					property: 'FULL_NM'
-				}, {
-					label: "Request Type",
-					property: 'PROCESS_TITLE',
-					type: EdmType.String
-				}, {
-					label: "Sub Type",
-					property: 'SUB_TYPE_T',
-					type: EdmType.String
-				}, {
-					label: "Request ID",
-					property: 'REQUEST_ID',
-					type: EdmType.String
-				}, {
-					label: "Payment Month",
-					property: 'PAY_MONTH',
-					type: EdmType.String
-				}, {
-					label: 'Employee Category',
-					property: 'EMP_CAT_T'
-				}, {
-					label: "Employee Group",
-					property: 'EMP_GP_T',
-					type: EdmType.String
-				}, {
-					label: 'Employee ULU',
-					property: 'ULU_T'
-				}, {
-					label: "Employee FDLU",
-					property: 'FDLU_T',
-					type: EdmType.String
-				}, {
-					label: "Start Date",
-					property: 'START_DATE',
-					type: EdmType.Date,
-					format: 'dd mmm, yyyy'
-				}, {
-					label: "End Date",
-					property: 'END_DATE',
-					type: EdmType.Date,
-					format: 'dd mmm, yyyy'
-				}, {
-					label: "Details of Work",
-					type: EdmType.String,
-					property: 'WORK_DETAILS'
-				}, {
-					label: "Usage of NUS Property and/or Services",
-					type: EdmType.String,
-					width: "50%",
-					property: 'PROPERTY_USAGE'
-				}, {
-					label: "Amount",
-					type: EdmType.String,
-					property: 'ADMIN_AMOUNT'
-				}, {
-					label: "Levy Amount",
-					type: EdmType.String,
-					property: 'LE_AMOUNT'
-				},
-				/*{
-					label: "Engaging Faculty/Client Name",
-					property: 'ENG_FDLU_T'
-				}, {
-					label: "Engaging Dept",
-					property: 'ENG_ULU_T'
-				},*/
-				{
-					label: "Client Name",
-					property: 'CLIENT_NAME'
-				}, {
-					label: "Business Expense Amount",
-					property: 'BIZ_EXP_AMT'
-				}, {
-					label: "Currency",
-					property: 'CURRENCY'
-				}, {
-					label: "Status",
-					property: 'STATUS',
-					width: "20%",
-					type: EdmType.String
-				}, {
-					label: "Submitted By",
-					property: 'SUBMITTED_BY_FULLNAME',
-					type: EdmType.String
-				}, {
-					label: "Extraction Date",
-					property: 'EXTRACTION_DATE',
-					width: "20%"
-				}
+				label: "Employee No.",
+				property: 'STAFF_ID',
+			}, {
+				label: 'Employee Name',
+				width: "40%",
+				property: 'FULL_NM'
+			}, {
+				label: "Request Type",
+				property: 'PROCESS_TITLE',
+				type: EdmType.String
+			}, {
+				label: "Sub Type",
+				property: 'SUB_TYPE_T',
+				type: EdmType.String
+			}, {
+				label: "Request ID",
+				property: 'REQUEST_ID',
+				type: EdmType.String
+			}, {
+				label: "Payment Month",
+				property: 'PAY_MONTH',
+				type: EdmType.String
+			}, {
+				label: 'Employee Category',
+				property: 'EMP_CAT_T'
+			}, {
+				label: "Employee Group",
+				property: 'EMP_GP_T',
+				type: EdmType.String
+			}, {
+				label: 'Employee ULU',
+				property: 'ULU_T'
+			}, {
+				label: "Employee FDLU",
+				property: 'FDLU_T',
+				type: EdmType.String
+			}, {
+				label: "Start Date",
+				property: 'START_DATE',
+				type: EdmType.Date,
+				format: 'dd mmm, yyyy'
+			}, {
+				label: "End Date",
+				property: 'END_DATE',
+				type: EdmType.Date,
+				format: 'dd mmm, yyyy'
+			}, {
+				label: "Details of Work",
+				type: EdmType.String,
+				property: 'WORK_DETAILS'
+			}, {
+				label: "Usage of NUS Property and/or Services",
+				type: EdmType.String,
+				width: "50%",
+				property: 'PROPERTY_USAGE'
+			}, {
+				label: "Amount",
+				type: EdmType.String,
+				property: 'ADMIN_AMOUNT'
+			}, {
+				label: "Levy Amount",
+				type: EdmType.String,
+				property: 'LE_AMOUNT'
+			},
+			/*{
+				label: "Engaging Faculty/Client Name",
+				property: 'ENG_FDLU_T'
+			}, {
+				label: "Engaging Dept",
+				property: 'ENG_ULU_T'
+			},*/
+			{
+				label: "Client Name",
+				property: 'CLIENT_NAME'
+			}, {
+				label: "Business Expense Amount",
+				property: 'BIZ_EXP_AMT'
+			}, {
+				label: "Currency",
+				property: 'CURRENCY'
+			}, {
+				label: "Status",
+				property: 'STATUS',
+				width: "20%",
+				type: EdmType.String
+			}, {
+				label: "Submitted By",
+				property: 'SUBMITTED_BY_FULLNAME',
+				type: EdmType.String
+			}, {
+				label: "Extraction Date",
+				property: 'EXTRACTION_DATE',
+				width: "20%"
+			}
 			];
 		},
 
@@ -2243,7 +2244,7 @@ sap.ui.define([
 				oControl.setVisible(true);
 			} else {
 				if (!oData || (oData === "CW_ESS" || oData === "CW_HRP" || oData === "CW_REPORTING_MGR" || oData === "CW_MANAGERS_MGR" || oData ===
-						"CW_PROGRAM_ADMIN" || oData === "CW_APPLICATION_ADMIN")) {
+					"CW_PROGRAM_ADMIN" || oData === "CW_APPLICATION_ADMIN")) {
 					this.AppModel.setProperty("/oVisFilter", false);
 				} else {
 					this.AppModel.setProperty("/oVisFilter", true);
