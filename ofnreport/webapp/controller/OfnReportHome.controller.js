@@ -26,7 +26,7 @@ sap.ui.define([
 		onInit: function () {
 			this.oRouter = this.getOwnerComponent().getRouter();
 			this._bDescendingSort = false;
-			// this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
+			this.getView().addStyleClass(this.getOwnerComponent().getContentDensityClass());
 
 			this.initializeModel();
 
