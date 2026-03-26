@@ -1,0 +1,63 @@
+name: Build and Deploy to SAP Cloud Foundry
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  CF_API: "https://api.cf.ap11.hana.ondemand.com"
+  CF_ORG: "National University of Singapore_nus-cf-btp-uat-r2fbv1yy"
+  CF_SPACE: "uat"
+  MBT_VERSION: "1.2.29"
+  MTAR_NAME: "archive"
+
+jobs:
+  build-and-deploy:
+    name: Build MTA and Deploy to CF
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install CF CLI v8
+        run: |
+          wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo gpg --dearmor -o /usr/share/keyrings/cf-cli-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/cf-cli-archive-keyring.gpg] https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+          sudo apt-get update
+          sudo apt-get install -y cf8-cli
+          cf --version
+
+      - name: Install MultiApps CF CLI Plugin
+        run: |
+          cf install-plugin multiapps -f
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install MBT
+        run: |
+          npm install -g mbt@${{ env.MBT_VERSION }}
+          mbt --version
+
+      - name: Install project dependencies
+        run: npm ci
+
+      - name: Build MTA archive
+        run: mbt build --mtar ${{ env.MTAR_NAME }}
+
+      - name: Log in to Cloud Foundry
+        run: |
+          cf api ${{ env.CF_API }}
+          cf login -a ${{ env.CF_API }} --sso-passcode hMmjnh3UWheNElqyXLozbQdQQteuFXeW -o "${{ env.CF_ORG }}" -s ${{ env.CF_SPACE }}
+
+      - name: Deploy to Cloud Foundry
+        run: cf deploy mta_archives/${{ env.MTAR_NAME }}.mtar
+
+      - name: CF Logout
+        if: always()
+        run: cf logout
