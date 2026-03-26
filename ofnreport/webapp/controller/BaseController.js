@@ -33,6 +33,11 @@ sap.ui.define([
 			var i18nTextValue = oResourceBundle.getText(sTextField);
 			return i18nTextValue ? i18nTextValue : sTextField;
 		},
+		getI18nVariables: function (sTextField, aVariables) {
+			var oResourceBundle = this.getOwnerComponent().getModel("i18n").getResourceBundle();
+			var i18nTextValue = oResourceBundle.getText(sTextField, aVariables);
+			return i18nTextValue ? i18nTextValue : sTextField;
+		},
 
 		/*
 		 * Display Message in different Sections
@@ -40,9 +45,7 @@ sap.ui.define([
 		showMessagePopOver: function (messageElement) {
 			messageElement = JSON.parse(JSON.stringify(messageElement));
 			var messageModel = this.modelAssignment("MessagePopOver");
-			// var data = messageModel.getData();
 			var data = [];
-			// data = (data instanceof Array) ? data : [];
 			messageElement = (messageElement instanceof Array) ? messageElement : [messageElement];
 			for (var i = 0; i < messageElement.length; i++) {
 				data.push(messageElement[i]);
@@ -55,7 +58,6 @@ sap.ui.define([
 		 * Close Message PopOver
 		 */
 		closeMessagePopOver: function () {
-			//Initialize Message PopOver for the first time
 			var messageModel = this.modelAssignment("MessagePopOver");
 			if (!Formatter.validateDataInModels(messageModel)) {
 				messageModel.setData(this.getOwnerComponent().getModel().getProperty("/messagedata"));
@@ -102,17 +104,6 @@ sap.ui.define([
 				var key = oData === "CW_REPORTING_MGR" ? "RM_STF_N" : oData === "CW_HRP" ? "HRP_STF_N" : "RMM_STF_N";
 				dynamicFilters.push(new sap.ui.model.Filter(key, sap.ui.model.FilterOperator.EQ, oLogData.STAFF_ID));
 			}
-			/*else if (oData === "CW_HRP") {
-				var oStaffList = this.AppModel.getProperty("/hrpStaffList");
-				if (oStaffList.length <= 50) {
-					for (var i = 0; i < oStaffList.length; i++) {
-						aFilters = [];
-						aFilters.push(new sap.ui.model.Filter("STAFF_ID", sap.ui.model.FilterOperator.EQ, oStaffList[i].STAFF_ID));
-						if (aFilters.length > 0)
-							dynamicFilters.push(new sap.ui.model.Filter(aFilters, true));
-					}
-				}
-			}*/
 			else if (oData === "CW_PROGRAM_ADMIN") {
 				aFilters = [];
 				aFilters.push(new sap.ui.model.Filter(ULUkey, sap.ui.model.FilterOperator.EQ, oLogData.primaryAssignment.ULU_C));
@@ -122,11 +113,11 @@ sap.ui.define([
 				for (var i = 0; i < oLogData.inboxApproverMatrix.length; i++) {
 					aFilters = [];
 					if (oLogData.inboxApproverMatrix[i].ULU_C !== "ALL" && oLogData.inboxApproverMatrix[i].STAFF_USER_GRP === oData) {
-						aFilters.push(new sap.ui.model.Filter(ULUkey, sap.ui.model.FilterOperator.EQ, oLogData.inboxApproverMatrix[i].ULU_C)); //testing ULU	
+						aFilters.push(new sap.ui.model.Filter(ULUkey, sap.ui.model.FilterOperator.EQ, oLogData.inboxApproverMatrix[i].ULU_C));
 					}
 
 					if (oLogData.inboxApproverMatrix[i].FDLU_C !== "ALL" && oLogData.inboxApproverMatrix[i].STAFF_USER_GRP === oData) {
-						aFilters.push(new sap.ui.model.Filter(FDLUkey, sap.ui.model.FilterOperator.EQ, oLogData.inboxApproverMatrix[i].FDLU_C)); //testing FDLU	
+						aFilters.push(new sap.ui.model.Filter(FDLUkey, sap.ui.model.FilterOperator.EQ, oLogData.inboxApproverMatrix[i].FDLU_C));
 					}
 
 					if (aFilters.length > 0)
@@ -224,7 +215,7 @@ sap.ui.define([
 				"Terminate") ? "terminateMsgStrip" : (this.selectedIconTab === "Ship Change") ? "shipMsgStrip" : "recruitMsgStrip";
 			this.closeMessageStrip(srcMsgStrip);
 			if (!(Formatter.validateEnteredDate(oEvent.getParameter("id"), oEvent.getParameter("valid")))) {
-				this.showMessageStrip(srcMsgStrip, "Please select current or future date", "E", fragmentId);
+				this.showMessageStrip(srcMsgStrip, this.getI18n("msg.selectCurrentOrFutureDate"), "E", fragmentId);
 			}
 		},
 
@@ -232,22 +223,23 @@ sap.ui.define([
 		 * Confirmation to submit
 		 */
 		confirmOnAction: function (submissionCallBack) {
+			var that = this;
 			var dialog = new sap.m.Dialog({
-				title: "Confirmation",
+				title: that.getI18n("dialog.confirmationTitle"),
 				state: "Information",
 				type: "Message",
 				content: new sap.m.Text({
-					text: "Do you want to Submit?"
+					text: that.getI18n("dialog.confirmSubmit")
 				}),
 				beginButton: new sap.m.Button({
-					text: "Yes",
+					text: that.getI18n("btn.yes"),
 					press: function () {
 						dialog.close();
 						submissionCallBack();
 					}
 				}),
 				endButton: new sap.m.Button({
-					text: 'No',
+					text: that.getI18n("btn.no"),
 					press: function () {
 						dialog.close();
 					}
@@ -278,9 +270,6 @@ sap.ui.define([
 				"com.stengglink.billingrequest.view.fragments.display.MassUploadErrorDialog", this);
 			this.getView().addDependent(this.errorDialog);
 			this.modelAssignment("ErrorMessageModel").setData(errorMessageList);
-			// this.errorDialog.setModel(new JSONModel({
-			// 	"errorList": errorMessageList
-			// }));
 			this.errorDialog.open();
 		},
 		closeMassErrorDialog: function () {
