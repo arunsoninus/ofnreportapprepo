@@ -53,7 +53,7 @@ jobs:
       - name: Log in to Cloud Foundry
         run: |
           cf api ${{ env.CF_API }}
-          cf login -a ${{ env.CF_API }} --sso-passcode hMmjnh3UWheNElqyXLozbQdQQteuFXeW -o "${{ env.CF_ORG }}" -s ${{ env.CF_SPACE }}
+          cf login -a ${{ env.CF_API }} --sso-passcode KVEs-i4LsHqOIIz-Rr7GJYVx_ncMBapT -o "${{ env.CF_ORG }}" -s ${{ env.CF_SPACE }}
 
       - name: Deploy to Cloud Foundry
         run: cf deploy mta_archives/${{ env.MTAR_NAME }}.mtar
