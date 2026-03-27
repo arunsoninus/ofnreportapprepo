@@ -25,32 +25,32 @@ sap.ui.define([
 						item.havingAnyError = false;
 						if (!item.RATE_TYPE) {
 							item.valueStateRateType = "Error";
-							item.valueStateTextRateType = "Mandatory field";
+							item.valueStateTextRateType = component.getI18n("validation.mandatoryField");
 							!item.havingAnyError ? true : false;
 							if (!hasValidationError) {
 								hasValidationError = true;
 							}
-							this._formatMessageList("Error", "Rate Type", component.getI18n("RateTimeRequired"), claimDate);
+							this._formatMessageList("Error", "Rate Type", component.getI18n("RateTimeRequired"), claimDate, component);
 						} else if (item.RATE_TYPE === '10') {
 							if (!item.START_TIME) {
 								item.valueStateStartTime = "Error";
-								item.valueStateTextStartTime = "Mandatory field";
+								item.valueStateTextStartTime = component.getI18n("validation.mandatoryField");
 								!item.havingAnyError ? true : false;
 								if (!hasValidationError) {
 									hasValidationError = true;
 								}
-								aValidation.push(this._formatMessageList("Error", "Start Time", component.getI18n("StarttimeRequired"), claimDate));
+								aValidation.push(this._formatMessageList("Error", "Start Time", component.getI18n("StarttimeRequired"), claimDate, component));
 
 							}
 
 							if (!item.END_TIME) {
 								item.valueStateEndTime = "Error";
-								item.valueStateTextEndTime = "Mandatory field";
+								item.valueStateTextEndTime = component.getI18n("validation.mandatoryField");
 								!item.havingAnyError ? true : false;
 								if (!hasValidationError) {
 									hasValidationError = true;
 								}
-								aValidation.push(this._formatMessageList("Error", "End Time", component.getI18n("EndtimeRequired"), claimDate));
+								aValidation.push(this._formatMessageList("Error", "End Time", component.getI18n("EndtimeRequired"), claimDate, component));
 							}
 							if (item.valueStateEndTime !== "Error" && item.valueStateStartTime !== "Error") {
 								// handling start time
@@ -98,7 +98,7 @@ sap.ui.define([
 									if (!hasValidationError) {
 										hasValidationError = true;
 									}
-									aValidation.push(this._formatMessageList("Error", "Start Time", component.getI18n("StartTimeGtEndTime"), claimDate));
+									aValidation.push(this._formatMessageList("Error", "Start Time", component.getI18n("StartTimeGtEndTime"), claimDate, component));
 								}
 							}
 
@@ -107,22 +107,22 @@ sap.ui.define([
 						if (item.IS_DISCREPENCY) {
 							if (!item.DISC_RATETYPE_AMOUNT) {
 								item.valueStateDiscAmount = "Error";
-								item.valueStateTextDiscAmount = "Mandatory field";
+								item.valueStateTextDiscAmount = component.getI18n("validation.mandatoryField");
 								!item.havingAnyError ? true : false;
 								if (!hasValidationError) {
 									hasValidationError = true;
 								}
 								aValidation.push(this._formatMessageList("Error", "Discrepency Rate Amount", component.getI18n("DiscRateTypeAmountRequired"),
-									claimDate));
+									claimDate, component));
 							}
 							if (!item.REMARKS) {
 								item.valueStateDiscAmount = "Error";
-								item.valueStateTextDiscAmount = "Mandatory field";
+								item.valueStateTextDiscAmount = component.getI18n("validation.mandatoryField");
 								!item.havingAnyError ? true : false;
 								if (!hasValidationError) {
 									hasValidationError = true;
 								}
-								aValidation.push(this._formatMessageList("Error", "Remarks", component.getI18n("RemarksRequired"), claimDate));
+								aValidation.push(this._formatMessageList("Error", "Remarks", component.getI18n("RemarksRequired"), claimDate, component));
 
 							} else {
 								// item.valueStateRemarks = "None";
@@ -151,7 +151,7 @@ sap.ui.define([
 								if (!hasValidationError) {
 									hasValidationError = true;
 								}
-								aValidation.push(this._formatMessageList("Error", "WBS Element", wbsValidateModel.getData().EtOutput.item.EvMsg, claimDate));
+								aValidation.push(this._formatMessageList("Error", "WBS Element", wbsValidateModel.getData().EtOutput.item.EvMsg, claimDate, component));
 							} else {
 								item.WBS = wbsValidateModel.getData().EtOutput.item.EvActwbs;
 								item.WBS_DESC = wbsValidateModel.getData().EtOutput.item.EvWbsdesc;
@@ -164,7 +164,7 @@ sap.ui.define([
 							if (!hasValidationError) {
 								hasValidationError = true;
 							}
-							aValidation.push(this._formatMessageList("Error", "Date", component.getI18n("RestrictingFutureDated"), claimDate));
+							aValidation.push(this._formatMessageList("Error", "Date", component.getI18n("RestrictingFutureDated"), claimDate, component));
 						}
 
 						//check for max limit for the individate rates
@@ -177,34 +177,34 @@ sap.ui.define([
 								if ((item.RATE_TYPE === '10' && comparingItem.RATE_TYPE === '11') || (comparingItem.RATE_TYPE === '10' && item.RATE_TYPE ===
 										'11')) {
 									item.valueStateRateType = "Error";
-									item.valueStateTextRateType = "Mandatory field";
+									item.valueStateTextRateType = component.getI18n("validation.mandatoryField");
 									!item.havingAnyError ? true : false;
 									if (!hasValidationError) {
 										hasValidationError = true;
 									}
-									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("RateTypeHourlyMonthlyMismatch"), claimDate));
+									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("RateTypeHourlyMonthlyMismatch"), claimDate, component));
 								}
 								//not more than one per script allowed
 								//rate code is 14
 								if (item.RATE_TYPE === '14' && comparingItem.RATE_TYPE === '14') {
 									item.valueStateRateType = "Error";
-									item.valueStateTextRateType = "Mandatory field";
+									item.valueStateTextRateType = component.getI18n("validation.mandatoryField");
 									!item.havingAnyError ? true : false;
 									if (!hasValidationError) {
 										hasValidationError = true;
 									}
-									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("PerScriptMismatch"), claimDate));
+									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("PerScriptMismatch"), claimDate, component));
 								}
 								//not more than one per student allowed
 								//rate code is 12
 								if (item.RATE_TYPE === '12' && comparingItem.RATE_TYPE === '12') {
 									item.valueStateRateType = "Error";
-									item.valueStateTextRateType = "Mandatory field";
+									item.valueStateTextRateType = component.getI18n("validation.mandatoryField");
 									!item.havingAnyError ? true : false;
 									if (!hasValidationError) {
 										hasValidationError = true;
 									}
-									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("PerStudentMismatch"), claimDate));
+									aValidation.push(this._formatMessageList("Error", "Rate Type", component.getI18n("PerStudentMismatch"), claimDate, component));
 								}
 
 							}
@@ -221,11 +221,11 @@ sap.ui.define([
 					"hasValidationError": hasValidationError
 				};
 			},
-			_formatMessageList: function (type, sColumnName, message, claimDate) {
+			_formatMessageList: function (type, sColumnName, message, claimDate, component) {
 				var messageObj = {};
 				messageObj.type = type;
 				messageObj.displayIdx = claimDate;
-				messageObj.sTitle = "Claim Date : " + messageObj.displayIdx + "\n Column :" + sColumnName;
+				messageObj.sTitle = component ? component.getI18nVariables("validation.claimDateColumn", [messageObj.displayIdx, sColumnName]) : "Claim Date : " + messageObj.displayIdx + "\n Column :" + sColumnName;
 				messageObj.title = sColumnName;
 				messageObj.state = type;
 				messageObj.message = message;
