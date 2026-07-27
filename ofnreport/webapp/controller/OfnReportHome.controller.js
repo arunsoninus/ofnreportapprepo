@@ -693,7 +693,7 @@ sap.ui.define([
 					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplateopwn,
 					sorter: new Sorter({
-						path: "REQUEST_ID",
+						path: "REQ_UNIQUE_ID",
 						descending: true
 					}),
 					filters: opwnAndFilter,
@@ -766,7 +766,7 @@ sap.ui.define([
 					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplate,
 					sorter: new Sorter({
-						path: "REQUEST_ID",
+						path: "REQ_UNIQUE_ID",
 						descending: true
 					}),
 					filters: sFilter,
