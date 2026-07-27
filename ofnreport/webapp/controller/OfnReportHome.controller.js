@@ -1539,6 +1539,7 @@ sap.ui.define([
 				"Accept": "application/json",
 				"Authorization": "Bearer" + " " + this.AppModel.getProperty("/token"),
 				"AccessPoint": "A",
+				"x-app-id": "nus.edu.sg.ofnreport",
 				"Content-Type": "application/json"
 			};
 			oModel.loadData(sUrl, null, null, "GET", null, null, oHeaders);
@@ -2387,6 +2388,7 @@ sap.ui.define([
 				"Accept": "application/json",
 				"Authorization": "Bearer" + " " + token,
 				"AccessPoint": "A",
+				"x-app-id": "nus.edu.sg.ofnreport",
 				"Content-Type": "application/json"
 			};
 			oModel.loadData(sUrl, null, null, "GET", null, null, oHeaders);
