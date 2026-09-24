@@ -5,7 +5,7 @@
 			<IconTabFilter key="cw" text="CW/NED" count="{AppModel>/CWNED_Count}" visible="{AppModel>/iscwofnvisible}">
 				<Table id="OfnCwNedRequestsTableId" visible="{AppModel>/iscwofnvisible}" inset="false" sticky="ColumnHeaders,HeaderToolbar" growing="true"
 					growingThreshold="50" updateFinished="onUpdateFinished"
-					items="{ path: 'OfnReportSrvModel>/cwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
+					items="{ path: 'OfnReportSrvModel>/cwsRequestViewsV2', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
 					<headerToolbar>
 						<OverflowToolbar>
 							<ToolbarSpacer/>
@@ -22,6 +22,9 @@
 						</Column>
 						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
 							<Label design="Bold" text="{i18n>ofnreport.Column9}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column10}" wrapping="true"/>
 						</Column>
 						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
 							<Label design="Bold" text="{i18n>ofnreport.Column2}" wrapping="true"/>
@@ -44,6 +47,7 @@
 							<cells>
 								<Text text="{OfnReportSrvModel>FULL_NM} ({OfnReportSrvModel>STAFF_ID})"/>
 								<Text text="{OfnReportSrvModel>REQUEST_ID}"/>
+								<Text text="{OfnReportSrvModel>PROCESS_TITLE}"/>
 								<Text text="{ path: 'OfnReportSrvModel>ULU_T'} / { path: 'OfnReportSrvModel>FDLU_T'}"/>
 								<Text
 									text="{ path: 'OfnReportSrvModel>START_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } } / { path: 'OfnReportSrvModel>END_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } }"/>
@@ -61,7 +65,7 @@
 			<IconTabFilter key="opwn" text="OPWN" count="{AppModel>/OPWN_Count}" visible="{AppModel>/isopwnofnvisible}">
 				<Table id="OfnOpwnRequestsTableId" inset="false" visible="{AppModel>/isopwnofnvisible}" sticky="ColumnHeaders,HeaderToolbar" growing="true"
 					growingThreshold="50" updateFinished="onUpdateFinishedopwn"
-					items="{ path: 'OfnReportSrvModel>/CwsRequestViews', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
+					items="{ path: 'OfnReportSrvModel>/cwsRequestViewsV2', sorter: { path: 'SUBMITTED_ON_TS', descending: true }, templateShareable: true }">
 					<headerToolbar>
 						<OverflowToolbar>
 							<ToolbarSpacer/>
@@ -78,6 +82,9 @@
 						</Column>
 						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
 							<Label design="Bold" text="{i18n>ofnreport.Column9}" wrapping="true"/>
+						</Column>
+						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
+							<Label design="Bold" text="{i18n>ofnreport.Column10}" wrapping="true"/>
 						</Column>
 						<Column hAlign="Left" minScreenWidth="Tablet" demandPopin="true">
 							<Label design="Bold" text="{i18n>ofnreport.Column2}" wrapping="true"/>
@@ -106,6 +113,7 @@
 							<cells>
 								<Text text="{OfnReportSrvModel>FULL_NM} ({OfnReportSrvModel>STAFF_ID})"/>
 								<Text text="{OfnReportSrvModel>REQUEST_ID}"/>
+								<Text text="{OfnReportSrvModel>PROCESS_TITLE}"/>
 								<Text text="{ path: 'OfnReportSrvModel>ULU_T'} / { path: 'OfnReportSrvModel>FDLU_T'}"/>
 								<Text
 									text="{ path: 'OfnReportSrvModel>START_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } } / { path: 'OfnReportSrvModel>END_DATE', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd MMM, yyyy' } }"/>

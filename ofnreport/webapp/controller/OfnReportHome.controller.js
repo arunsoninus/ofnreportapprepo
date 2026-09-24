@@ -999,6 +999,16 @@ sap.ui.define([
 				aFilter.push(new Filter(andFilter, true));
 			}
 
+			// Mandatory filter: restrict to the process codes the user is OFN_ADMIN for (from approver matrix)
+			var aProcessFilters = aMatrixOfnAdmin.map(function (oItem) {
+				return new Filter("PROCESS_CODE", FilterOperator.EQ, oItem.PROCESS_CODE);
+			});
+			if (aProcessFilters.length === 0) {
+				// no assignment -> return nothing rather than everything
+				aProcessFilters.push(new Filter("PROCESS_CODE", FilterOperator.EQ, ""));
+			}
+			aFilter.push(new Filter(aProcessFilters, false));
+
 			this.AppModel.setProperty("/aSearchFilter", aFilter);
 		},
 
@@ -1164,7 +1174,7 @@ sap.ui.define([
 			var sPath = oEvent.getParameter("listItem").getBindingContext("OfnReportSrvModel").getPath();
 			var objData = this.getComponentModel("OfnReportSrvModel").getProperty(sPath);
 			var tabKey = this.AppModel.getProperty("/oTabKey");
-			var project = "cwsRequestViews('" + objData.REQ_UNIQUE_ID + "')";
+			var project = "cwsRequestViewsV2('" + objData.REQ_UNIQUE_ID + "')";
 			var layout = "MidColumnFullScreen";
 			var oStateToSave = this.AppModel.getProperty("/aSearchFilter");
 			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");
@@ -1452,7 +1462,7 @@ sap.ui.define([
 
 		onPressSearchClaimRequest: function (oEvent) {
 			var sValue = this.getView().byId("srchFldClaimRequest").getValue();
-			var sPath = "OfnReportSrvModel>/CwsRequestViews";
+			var sPath = "OfnReportSrvModel>/cwsRequestViewsV2";
 			var oSorter = new Sorter({
 				path: "REQ_UNIQUE_ID",
 				descending: true
