@@ -1068,7 +1068,7 @@ sap.ui.define([
 						objNodes.lane = ("L00" + taskHistoryList[t].TASK_POSITION).toString();
 						objNodes.COMPLETED_BY_FULL_NAME = taskHistoryList[t].TASK_USER_FULLNAME ? taskHistoryList[t].TASK_USER_FULLNAME :
 							"";
-						if (!objNodes.TASK_ACTUAL_DOC) {
+						if (taskHistoryList[t].TASK_ACTUAL_DOC) {
 							var oDateFormat = sap.ui.core.format.DateFormat.getInstance({
 								pattern: "d MMM, yyyy HH:mm"
 							});
