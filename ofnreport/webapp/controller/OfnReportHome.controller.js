@@ -693,7 +693,7 @@ sap.ui.define([
 					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplateopwn,
 					sorter: new Sorter({
-						path: "REQ_UNIQUE_ID",
+						path: "SUBMITTED_ON_TS",
 						descending: true
 					}),
 					filters: opwnAndFilter,
@@ -766,7 +766,7 @@ sap.ui.define([
 					path: "OfnReportSrvModel>" + Config.dbOperations.cwsRequestViewApi,
 					template: this.oTemplate,
 					sorter: new Sorter({
-						path: "REQ_UNIQUE_ID",
+						path: "SUBMITTED_ON_TS",
 						descending: true
 					}),
 					filters: sFilter,
@@ -1464,7 +1464,7 @@ sap.ui.define([
 			var sValue = this.getView().byId("srchFldClaimRequest").getValue();
 			var sPath = "OfnReportSrvModel>/cwsRequestViewsV2";
 			var oSorter = new Sorter({
-				path: "REQ_UNIQUE_ID",
+				path: "SUBMITTED_ON_TS",
 				descending: true
 			});
 			var aFilter = Utility._onPressSearchClaimRequest(sValue, this);
